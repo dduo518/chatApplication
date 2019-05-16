@@ -4,10 +4,71 @@ body {
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: grayscale; 
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+
+/*******************************
+head css style
+*******************************/
+.headPannel{
+  min-height: 5vh;
+}
+
+
+/*******************************
+chatPannel
+*******************************/ 
+.chatPannel{
+   min-height: 95vh;
+}
+
+/*******************************
+munu css style
+*******************************/
+.menu{
+  text-align: center; 
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10px; 
+  display: flex;
+  flex-direction:column;
+}
+
+.menu .itemList{
+  display: none;
+}
+.menu .itemList.active{
+  display: block;
+}
+
+.menu .menuList{
+  flex-grow:1;
+  background: #f8fafd;
+}
+
+/*******************************
+chatwindow css style
+*******************************/
+.chatWindow{
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10px; 
+}
+.chatHead{
+  height: 10%;
+  border: 1px solid #89c0e8;
+  border-bottom:0; 
+  border-radius: 5px  5px 0 0;
+  background: #eef1f6;
+}
+.chatRecord{
+  height: 60%;
+  border: 1px solid #89c0e8;
+  border-bottom:0; 
+}
+.chatInput{
+  height: 30%;
+  border: 1px solid #89c0e8;
+   border-radius: 0 0 5px 5px;
 }

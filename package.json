@@ -1,0 +1,7 @@
+{
+  "name": "chatApp",
+  "version": "1.0.0",
+  "description": "this is a chat application  including  client and server ",
+  "main": "index.js",
+  "license": "MIT"
+}

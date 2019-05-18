@@ -7,7 +7,7 @@ class HomeController extends Controller {
     const { ctx, app } = this;
     await ctx.model.User.find({});
     await app.redis.set('foo', 'bar');
-    ctx.body = 'gi egg';
+    ctx.body = 'hi egg';
   }
 }
 

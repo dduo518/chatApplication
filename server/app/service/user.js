@@ -1,8 +1,8 @@
 'use strict';
 const Service = require('egg').Service;
 const { UserRegisteredError, UserLoginError } = require('./../error/userError');
-const { MD5 } = require('./../../utils/cryptoHelper');
-const { createToken } = require('./../../utils/tokenHelper');
+const { MD5 } = require('./../utils/cryptoHelper');
+const { createToken } = require('./../utils/tokenHelper');
 const { userInfoKey } = require('./../keys');
 class UserService extends Service {
   async registered(params) {
@@ -11,13 +11,14 @@ class UserService extends Service {
       return { error };
     }
     const user = new this.ctx.model.User({
+      userId: this.app.mongoose.Types.ObjectId(),
       userName: params.userName,
       passWord: MD5(params.passWord),
     });
 
     const userInfo = await user.save();
     const body = {
-      userId: userInfo._id,
+      userId: userInfo.userId,
       userName: userInfo.userName,
     };
     return { body };
@@ -38,21 +39,23 @@ class UserService extends Service {
     const userInfo = await this.ctx.model.User.findOne({
       userName: params.userName,
       passWord: MD5(params.passWord),
-    }, { passWord: -1, userName: 1 });
+    }, { passWord: 0, _id: 0 });
     if (!userInfo) {
       const error = new UserLoginError();
       return { error };
     }
-    const user = { userName: userInfo.userName, userId: userInfo._id };
+    const user = { userName: userInfo.userName, userId: userInfo.userId };
     const token = createToken(user);
     user.token = token;
     user.status = 0;
-    const userInfoRedisKey = userInfoKey(userInfo._id);
+    const userInfoRedisKey = userInfoKey(userInfo.userId);
     await this.putDataInRedis(userInfoRedisKey, user);
     return { body: user };
   }
 
   /**
+   * TODO: userInfo should set exp time in redis and when goto verifyAuth middleware reset the exp time
+   * so the cookie will no exp if always request api or connect websocket
    * data save in redis and data is map[string]{} use string to key
    * @param {string} key
    * @param {Object} data map[string]{} use for in
@@ -71,6 +74,14 @@ class UserService extends Service {
     const userInfoRedisKey = userInfoKey(userId);
     await this.app.redis.del(userInfoRedisKey);
     return { body: userId };
+  }
+
+  async list(userId) {
+    // when get the user list should exclude own user
+    // TODO: Pagination and search from name
+    const where = { userId: { $ne: [ this.app.mongoose.Types.ObjectId(userId) ] } };
+    const list = await this.ctx.model.User.find(where, { passWord: 0, _id: 0 });
+    return { body: list };
   }
 }
 module.exports = UserService;

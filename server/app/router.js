@@ -1,5 +1,6 @@
 'use strict';
-const { registered, login, logout } = require('./validate/user');
+const { registered, login } = require('./validate/user');
+const { createGroup, addMembers, removeMembers, updateGroup } = require('./validate/group');
 /**
  * @param {Egg.Application} app - egg application
  */
@@ -12,5 +13,15 @@ module.exports = app => {
    */
   router.post('/api/user/registered', middleware.validateBody(registered, app), controller.user.registered);
   router.post('/api/user/login', middleware.validateBody(login, app), controller.user.login);
-  router.post('/api/user/logout', middleware.validateBody(logout, app), controller.user.logout);
+  router.post('/api/user/logout', middleware.verifyAuth, controller.user.logout);
+  router.get('/api/user/list', middleware.verifyAuth, controller.user.list);
+
+  /**
+   * group api
+   */
+  router.get('/api/group/list', middleware.verifyAuth, controller.group.groupList);
+  router.post('/api/group/create', middleware.validateBody(createGroup, app), middleware.verifyAuth, controller.group.createGroup);
+  router.post('/api/group/update', middleware.validateBody(updateGroup, app), middleware.verifyAuth, controller.group.updateGroup);
+  router.post('/api/group/members/add', middleware.validateBody(addMembers, app), middleware.verifyAuth, controller.group.addMembers);
+  router.delete('/api/group/members', middleware.validateBody(removeMembers, app), middleware.verifyAuth, controller.group.removeMembers);
 };

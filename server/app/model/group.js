@@ -5,7 +5,8 @@ module.exports = app => {
   const Schema = mongoose.Schema;
 
   const GroupSchema = new Schema({
-    name: { type: String },
+    groupId: { type: Schema.Types.ObjectId, default: mongoose.Types.ObjectId() },
+    groupName: { type: String },
     members: [],
     updatedTime: { type: Date, default: new Date() },
     createdTime: { type: Date, default: new Date() },

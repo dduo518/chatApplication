@@ -2,7 +2,7 @@
 
 const { app, assert } = require('egg-mock/bootstrap');
 
-describe.only('test/app/service/user.test.js', () => {
+describe('test/app/service/user.test.js', () => {
 
   before(async () => {
     const userModel = app.model.User;

@@ -1,4 +1,5 @@
 'use strict';
+const { modifiedPlugin } = require('./plugins/updatedTime');
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
@@ -8,6 +9,9 @@ module.exports = app => {
     from: { type: Schema.Types.ObjectId },
     message: { type: String },
     attachments: [{ type: String, md5: String, fileName: String }],
+    updatedTime: { type: Date, default: new Date() },
+    createdTime: { type: Date, default: new Date() },
   });
+  MessageSchema.plugin(modifiedPlugin);
   return mongoose.model('Message', MessageSchema);
 };

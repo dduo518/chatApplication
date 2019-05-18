@@ -11,4 +11,14 @@ module.exports = class UserController extends Controller {
     }
     ctx.body = result.body;
   }
+
+  async login() {
+    const { ctx } = this;
+    const result = await ctx.service.user.login(this.ctx.request.body);
+    if (result.error) {
+      ctx.error = result.error;
+      return;
+    }
+    ctx.body = result.body;
+  }
 };

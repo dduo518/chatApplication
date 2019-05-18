@@ -13,3 +13,4 @@ exports.registered = {
     },
   },
 };
+exports.login = exports.registered;

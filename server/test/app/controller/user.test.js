@@ -1,13 +1,13 @@
 'use strict';
 
 const { app, assert } = require('egg-mock/bootstrap');
-
-describe.only('test/app/controller/user.test.js', () => {
+describe('test/app/controller/user.test.js', () => {
 
   before(async () => {
     const userModel = app.model.User;
     await userModel.deleteMany({});
   });
+
   const params = {
     userName: 'zhengchong',
     passWord: 'password',
@@ -51,6 +51,7 @@ describe.only('test/app/controller/user.test.js', () => {
     assert(response.body.userName === params.userName);
     assert(response.body.status === 0);
     params.userId = response.body.userId;
+    params.token = response.body.token;
   });
 
   it('POST /api/user/login wrong password should fail', async () => {
@@ -66,12 +67,18 @@ describe.only('test/app/controller/user.test.js', () => {
     assert(response.body.message === 'Invalid Username or Password');
   });
 
+  it('GET /api/user/list should success', async () => {
+    const response = await app.httpRequest()
+      .get('/api/user/list')
+      .set('Cookie', `token=${params.token}`)
+      .expect(200);
+    assert(response.body.length === 0);
+  });
+
   it('POST /api/user/logout should success', async () => {
     const response = await app.httpRequest()
       .post('/api/user/logout')
-      .send({
-        userId: params.userId,
-      })
+      .set('Cookie', `token=${params.token}`)
       .expect(200);
     assert(response.text === params.userId);
   });

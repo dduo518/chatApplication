@@ -14,3 +14,13 @@ exports.registered = {
   },
 };
 exports.login = exports.registered;
+
+exports.logout = {
+  body: {
+    userId: {
+      type: 'string',
+      require: true,
+      allowEmpty: false,
+    },
+  },
+};

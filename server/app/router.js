@@ -1,5 +1,5 @@
 'use strict';
-const { registered, login } = require('./../validate/user');
+const { registered, login, logout } = require('./validate/user');
 /**
  * @param {Egg.Application} app - egg application
  */
@@ -12,4 +12,5 @@ module.exports = app => {
    */
   router.post('/api/user/registered', middleware.validateBody(registered, app), controller.user.registered);
   router.post('/api/user/login', middleware.validateBody(login, app), controller.user.login);
+  router.post('/api/user/logout', middleware.validateBody(logout, app), controller.user.logout);
 };

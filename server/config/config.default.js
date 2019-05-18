@@ -32,6 +32,12 @@ module.exports = appInfo => {
       db: 0,
     },
   };
+  config.middleware = [ 'error' ];
+
+  config.security = {
+    csrf: false,
+    ctoken: false,
+  };
 
 
   return {

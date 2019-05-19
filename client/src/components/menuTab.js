@@ -13,7 +13,6 @@ const CLASSNAME  = {
   DEFAULTCLASSNAME:'itemList'
 }
 
-
 export default class MenuTab extends React.Component {
   constructor(props) {
     super(props);
@@ -51,8 +50,7 @@ export default class MenuTab extends React.Component {
     this.setState({ index: index });
   }
 
-  componentDidMount() {
-    
+  componentDidMount() { 
     console.log("componentWillUnmount")
     console.log(this.state.index)
   }

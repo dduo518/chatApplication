@@ -1,6 +1,7 @@
-import React from 'react'
+import React from 'react';
+import { connect } from 'react-redux';
 import Lists from './../components/lists'
-export default class User extends React.Component {
+class User extends React.Component {
   render() {
     return (
       <div className={ this.props.className }>
@@ -9,3 +10,8 @@ export default class User extends React.Component {
     )
   }
 }
+
+export default connect(
+  null,
+  { }
+)(User);

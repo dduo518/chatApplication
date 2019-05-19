@@ -10,19 +10,11 @@ const { userInfoKey } = require('./../../keys');
  */
 module.exports = app => {
   class Controller extends app.Controller {
-    async index() {
+    async chat() {
       const data = this.ctx.args[0];
       const resolveMsg = await this._parseMsgPackage(data);
       const message = await this._persistentMsg(resolveMsg.message);
-      resolveMsg.message = {
-        from: message.from,
-        fromName: message.fromName,
-        to: message.to,
-        text: message.text,
-        attachments: message.attachments,
-        msgId: message._id, // this msgId create in server
-        _msgId: resolveMsg._msgId, // this msgId create in client
-      };
+      resolveMsg.message.msgId = message._id;// this msgId create in server
       await this.messageToClient(resolveMsg);
     }
 
@@ -32,32 +24,26 @@ module.exports = app => {
     }
 
     async joinRoom() {
-      console.log('joinRoom');
+      const data = this.ctx.args[0];
+      this.ctx.socket.join(data);
     }
 
     async _parseMsgPackage(data) {
-      const toUserInfo = await this.getToUserInfo(data.to);
       const message = {
-        from: this.ctx.socket.userInfo.userId,
+        from: this.ctx.transformStrToObjectId(this.ctx.socket.userInfo.userId),
+        to: this.ctx.transformStrToObjectId(this.ctx.socket.userInfo.to),
         fromName: this.ctx.socket.userInfo.userName,
-        to: data.to,
-        toName: toUserInfo.toName,
         text: data.message,
         attachments: data.attachments || [],
+        _msgId: data._msgId, // this msgId create in client
       };
       return {
-        to: data.to, toSocketId: toUserInfo.toSocketId, message, _msgId: data._msgId,
+        to: data.to, message,
       };
     }
 
     async _persistentMsg(msg) {
-      const messgae = new this.ctx.model.Message({
-        fromName: msg.fromName,
-        from: app.mongoose.Types.ObjectId(msg.from),
-        to: app.mongoose.Types.ObjectId(msg.to),
-        message: msg.text,
-        attachments: msg.attachments,
-      });
+      const messgae = new this.ctx.model.Message(msg);
       return await messgae.save();
     }
 
@@ -67,13 +53,25 @@ module.exports = app => {
 
     async getToUserInfo(toUserId) {
       const toUserInfoKey = userInfoKey(toUserId);
-      const result = await Promise.all([
-        this.app.redis.hget(toUserInfoKey, 'socketId'),
-        this.app.redis.hget(toUserInfoKey, 'userName'),
-      ]);
-      const toSocketId = result[0];
-      const toName = result[1];
-      return { toSocketId, toName };
+      const toSocketId = this.app.redis.hget(toUserInfoKey, 'socketId');
+      return { toSocketId };
+    }
+
+    async chatGroup() {
+      const data = this.ctx.args[0];
+      const resolveMsg = await this._parseMsgPackage(data);
+      const message = await this._persistentGroupMsg(resolveMsg.message);
+      resolveMsg.message.msgId = message._id;// this msgId create in server
+      await this.messageToGroup(resolveMsg);
+    }
+
+    async _persistentGroupMsg(msg) {
+      const messgae = new this.ctx.model.GroupMessage(msg);
+      return await messgae.save();
+    }
+
+    async messageToGroup(data) {
+      this.ctx.socket.to(data.to).emit('newMsg', JSON.stringify(data.message), this.msgAck);
     }
   }
   return Controller;

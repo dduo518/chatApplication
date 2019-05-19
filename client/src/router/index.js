@@ -1,23 +1,19 @@
 import React from 'react';
-import { BrowserRouter as Router} from 'react-router-dom';
-import Header from '../page/header';
-import ChatContent from '../page/chatContent';
- 
-import { Layout } from 'element-react';
-import MenuTab from '../page/menuTab'  
-export default () => {
-  return (
-    <Router> 
-        <Header title='chat' />
-        <Layout.Row className='chatPannel' type='flex'>
-          <Layout.Col offset='2' span='6'> 
-            <MenuTab /> 
-          </Layout.Col>
-          <Layout.Col span='14'>
-            <ChatContent/>
-          </Layout.Col>
-        </Layout.Row> 
-    </Router>
-  );
+import { BrowserRouter as Router, Route, Redirect} from 'react-router-dom'
+import { connect } from 'react-redux'
+import Page from '../page';
+import Login from '../page/login'
+const router = ( ) => {
+    return (
+      <Router> 
+          <Route path='/' exact component={Page} />
+          <Route path="/login"  component={Login} />
+      </Router>
+    );
 }
+
+export default connect(
+  null,
+  {  }
+)(router);
 

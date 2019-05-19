@@ -26,6 +26,7 @@ module.exports = appInfo => {
   config.mongoose = {
     url: 'mongodb://127.0.0.1:27017/chat',
   };
+
   config.redis = {
     client: {
       port: 6379,
@@ -37,8 +38,15 @@ module.exports = appInfo => {
   config.middleware = [ 'error' ];
 
   config.security = {
-    csrf: false,
-    ctoken: false,
+    csrf: {
+      enable: false,
+    },
+  };
+
+  config.cors = {
+    credentials: true,
+    origin: ctx => ctx.get('origin'),
+    allowMethods: '*',
   };
 
   config.io = {

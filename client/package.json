@@ -3,15 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "element-react": "^1.4.33",
     "element-theme-default": "^1.4.13",
+    "enzyme": "^3.9.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.0.3",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
+    "react-router-redux": "^4.0.8",
     "react-scripts": "3.0.1",
     "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.2.0"
   },
   "scripts": {

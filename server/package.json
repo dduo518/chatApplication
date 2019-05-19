@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "egg": "^2.15.1",
+    "egg-cors": "^2.2.0",
     "egg-mongoose": "^3.2.0",
     "egg-redis": "^2.3.2",
     "egg-scripts": "^2.11.0",
@@ -27,10 +28,7 @@
     "eslint": "^5.13.0",
     "eslint-config-egg": "^7.1.0"
   },
-  "engines": {
-    "node": "^10.15.1"
-  },
-  "scripts":{
+  "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-chatServer",
     "stop": "egg-scripts stop --title=egg-server-chatServer",
     "dev": "egg-bin dev --cluster --sticky",

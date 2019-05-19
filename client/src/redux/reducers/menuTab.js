@@ -1,8 +1,13 @@
-import { MENU, CHANGE_INDEX } from './../constants'
+import {
+  MENU,
+  CHANGE_INDEX,
+  GET_USERLIST,
+  GET_GROUPLIST
+} from './../constants'
 
 const initialState = {
   userLists: [],
-  groupList: [],
+  groupLists: [],
   index: MENU.USER
 };
 
@@ -11,6 +16,14 @@ export default function (state = initialState, action) {
     case CHANGE_INDEX: {
       const { content } = action.payload;
       return { ...state, index: content };
+    }
+    case GET_USERLIST: {
+      const { payload } = action;
+      return { ...state, userLists: payload };
+    }
+    case GET_GROUPLIST: {
+      const { payload } = action;
+      return { ...state, groupLists: payload };
     }
     default:
       return state;

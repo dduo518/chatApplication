@@ -1,5 +1,3 @@
-
-
 export const apiConf = {
   baseURL: 'http://localhost:7001/api',
   logup: '/user/registered',

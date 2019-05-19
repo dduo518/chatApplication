@@ -26,6 +26,12 @@ module.exports = app => {
   router.delete('/api/group/members', middleware.validateBody(removeMembers, app), middleware.verifyAuth, controller.group.removeMembers);
 
   /**
+   * pull message api
+   */
+  router.get('/api/message/list/:id', middleware.verifyAuth, controller.message.getMessage);
+  router.get('/api/group/message/list/:id', middleware.verifyAuth, controller.message.getGroupMessage);
+
+  /**
    * chating event
    */
   app.io.route('chat', app.io.controller.chat.chat);

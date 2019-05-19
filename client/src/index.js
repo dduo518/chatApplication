@@ -4,7 +4,10 @@ import './index.css';
 import Router from './router';
 import * as serviceWorker from './serviceWorker';
 import 'element-theme-default';
-
-ReactDOM.render(<Router />, document.getElementById('root'));
+import { Provider } from 'react-redux'
+import store from './redux/store.js'
+ReactDOM.render(<Provider store={store}>
+  <Router />
+</Provider>, document.getElementById('root'));
 
 serviceWorker.unregister();

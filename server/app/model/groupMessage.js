@@ -5,8 +5,7 @@ module.exports = app => {
   const Schema = mongoose.Schema;
 
   const GroupMessageSchema = new Schema({
-    groupId: { type: Schema.Types.ObjectId },
-    groupName: { type: String },
+    to: { type: Schema.Types.ObjectId },
     fromName: { type: String },
     from: { type: Schema.Types.ObjectId },
     message: { type: String },

@@ -44,9 +44,16 @@ class UserService extends Service {
       const error = new UserLoginError();
       return { error };
     }
-    const user = { userName: userInfo.userName, userId: userInfo.userId };
+
+
+    const groupInfo = await this.ctx.model.Group.find({
+      members: { $in: [ this.ctx.transformStrToObjectId(userInfo.userId) ] },
+    }, { groupId: 1, _id: 0, groupName: 1 });
+
+    const user = { userName: userInfo.userName, userId: userInfo.userId, groupInfo };
     const token = createToken(user);
     user.token = token;
+    user.groupInfo = groupInfo;
     user.status = 0;
     const userInfoRedisKey = userInfoKey(userInfo.userId);
     await this.putDataInRedis(userInfoRedisKey, user);
@@ -64,7 +71,7 @@ class UserService extends Service {
     const command = [];
     for (const _key in data) {
       let val = data[_key];
-      if (typeof val === 'string') val = JSON.stringify(val);
+      if (typeof val !== 'string') val = JSON.stringify(val);
       command.push([ 'hset', key, _key, val ]);
     }
     await this.app.redis.multi(command).exec();

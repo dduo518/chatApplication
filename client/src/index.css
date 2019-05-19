@@ -13,6 +13,7 @@ head css style
 *******************************/
 .headPannel{
   min-height: 5vh;
+  text-align: center
 }
 
 
@@ -33,6 +34,7 @@ munu css style
   padding: 10px; 
   display: flex;
   flex-direction:column;
+  position: relative;
 }
 
 .menu .itemList{
@@ -47,6 +49,24 @@ munu css style
   background: #f8fafd;
 }
 
+.menu .list{
+  padding: 0
+}
+.menu .list li{
+  list-style-type: none;
+  height: 50px;
+  line-height: 50px;
+  cursor: pointer;
+}
+.menu .list li.actived{
+  background: #89c0e8
+}
+
+.menu .btn{
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+}
 /*******************************
 chatwindow css style
 *******************************/
@@ -72,3 +92,4 @@ chatwindow css style
   border: 1px solid #89c0e8;
    border-radius: 0 0 5px 5px;
 }
+

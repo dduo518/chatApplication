@@ -103,6 +103,7 @@ export const startConnect = ()=>{
         type: CONNECT_SUCCESS,
         socket
       })
+      return socket
     } catch (error) {
       dispatch({
         type: CONNECT_FAILURE

@@ -13,9 +13,12 @@ class ChatWindow extends React.Component {
       </div>
     )
   }
-  componentDidMount() {
+  async componentDidMount() {
     console.log('start connect')
-    this.props.startConnect()
+    const socket = await this.props.startConnect()
+    socket.on(this.props.appState.login.userId, (message) => {
+      console.log(message)
+    })
   }
 }
 

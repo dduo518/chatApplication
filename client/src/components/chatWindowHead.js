@@ -1,10 +1,18 @@
 import React from 'react'
-export default class ChatWindowHead extends React.Component {
-  render() {
+import { connect } from 'react-redux'
+const ChatWindowHead = ({userName}) => {
     return (
       <div className="chatHead">
-        ChatWindowHead
+        <h3>chatting with:{userName}</h3>
       </div>
     )
-  }
 }
+
+const mapStateToProps = state => {
+  return { userName: state.chat.name };
+}
+
+export default connect(
+  mapStateToProps,
+  {}
+)(ChatWindowHead);

@@ -9,6 +9,9 @@ class HomeController extends Controller {
     await app.redis.set('foo', 'bar');
     ctx.body = 'hi egg';
   }
+  async render() {
+    await this.ctx.render('index.js');
+  }
 }
 
 module.exports = HomeController;

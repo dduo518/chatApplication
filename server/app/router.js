@@ -24,4 +24,7 @@ module.exports = app => {
   router.post('/api/group/update', middleware.validateBody(updateGroup, app), middleware.verifyAuth, controller.group.updateGroup);
   router.post('/api/group/members/add', middleware.validateBody(addMembers, app), middleware.verifyAuth, controller.group.addMembers);
   router.delete('/api/group/members', middleware.validateBody(removeMembers, app), middleware.verifyAuth, controller.group.removeMembers);
+
+  app.io.route('chat', app.io.controller.chat.index);
+  app.io.route('joinRoom', app.io.controller.chat.joinRoom);
 };

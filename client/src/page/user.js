@@ -1,7 +1,6 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from 'react'
 import Lists from './../components/lists'
-class User extends React.Component {
+export default class User extends React.Component {
   render() {
     return (
       <div className={ this.props.className }>
@@ -9,9 +8,7 @@ class User extends React.Component {
       </div>
     )
   }
+  componentDidMount() {
+    console.log("user componentWillUnmount")
+  }
 }
-
-export default connect(
-  null,
-  { }
-)(User);

@@ -8,4 +8,7 @@ export default class Group extends React.Component {
       </div>
     )
   }
+  componentDidMount() {
+    console.log("group componentWillUnmount")
+  }
 }

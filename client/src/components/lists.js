@@ -1,10 +1,21 @@
 import React from 'react'
-export default class Lists extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1> this {this.props.type} list</ h1>
-      </div>
-    )
-  }
+import Item from './item'
+import { connect } from 'react-redux';
+import { getLists } from "../redux/selectors";
+const Lists = ({ lists, index }) => {
+  return (
+  <ul>
+    {lists && lists.length
+      ? lists.map((item, index) => {
+        return <Item key={`item-${item.id}`} item={item} />;
+      })
+        : `no ${index} list!`}
+  </ul>
+  )
+};
+
+const mapStateToProps = state => {
+  const {lists,index} = getLists(state, state.menuTab.index);
+  return { lists, index };
 }
+export default connect(mapStateToProps)(Lists);

@@ -4,7 +4,7 @@ import Header from '../page/header';
 import ChatContent from '../page/chatContent';
  
 import { Layout } from 'element-react';
-import MenuTab from '../components/menuTab'  
+import MenuTab from '../page/menuTab'  
 export default () => {
   return (
     <Router> 

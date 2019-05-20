@@ -5,7 +5,7 @@
 ##### how to start BackEnd?
 
 - 1. the server is depend on  mongodb and redis and the frameworks is eggjs[https://github.com/eggjs/egg]
-- 2. the node version is v8.15.0 becase the eggjs-socket has a issue([https://github.com/eggjs/egg/issues/3576])
+- 2. the node version is v8.15.0 because the eggjs-socket has a issues([https://github.com/eggjs/egg/issues/3576])
 - 3. the server config in ./server/config/config.default.js
 - 4. open file path  ```cd server```
 - 5. install package `$./server> yarn `

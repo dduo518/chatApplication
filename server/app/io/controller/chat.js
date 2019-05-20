@@ -31,6 +31,7 @@ module.exports = app => {
     getClientSocket(socketId) {
       return this.app.io.sockets.connected[socketId];
     }
+
     async joinRoom() {
       const data = this.ctx.args[0];
       this.ctx.socket.join(data);

@@ -11,25 +11,51 @@ module.exports = app => {
    * user controller registered router
    * TODO: this will add router group or add swagger to create api doc
    */
-  router.post('/api/user/registered', middleware.validateBody(registered, app), controller.user.registered);
-  router.post('/api/user/login', middleware.validateBody(login, app), controller.user.login);
-  router.post('/api/user/logout', middleware.verifyAuth, controller.user.logout);
-  router.get('/api/user/list', middleware.verifyAuth, controller.user.list);
+  router.post('/api/user/registered',
+    middleware.validateBody(registered, app),
+    controller.user.registered);
+  router.post('/api/user/login',
+    middleware.validateBody(login, app),
+    controller.user.login);
+  router.post('/api/user/logout',
+    middleware.verifyAuth,
+    controller.user.logout);
+  router.get('/api/user/list',
+    middleware.verifyAuth,
+    controller.user.list);
 
   /**
    * group api
    */
-  router.get('/api/group/list', middleware.verifyAuth, controller.group.groupList);
-  router.post('/api/group/create', middleware.validateBody(createGroup, app), middleware.verifyAuth, controller.group.createGroup);
-  router.post('/api/group/update', middleware.validateBody(updateGroup, app), middleware.verifyAuth, controller.group.updateGroup);
-  router.post('/api/group/members/add', middleware.validateBody(addMembers, app), middleware.verifyAuth, controller.group.addMembers);
-  router.delete('/api/group/members', middleware.validateBody(removeMembers, app), middleware.verifyAuth, controller.group.removeMembers);
+  router.get('/api/group/list',
+    middleware.verifyAuth,
+    controller.group.groupList);
+  router.post('/api/group/create',
+    middleware.validateBody(createGroup, app),
+    middleware.verifyAuth,
+    controller.group.createGroup);
+  router.post('/api/group/update',
+    middleware.validateBody(updateGroup, app),
+    middleware.verifyAuth,
+    controller.group.updateGroup);
+  router.post('/api/group/members/add',
+    middleware.validateBody(addMembers, app),
+    middleware.verifyAuth,
+    controller.group.addMembers);
+  router.delete('/api/group/members',
+    middleware.validateBody(removeMembers, app),
+    middleware.verifyAuth,
+    controller.group.removeMembers);
 
   /**
    * pull message api
    */
-  router.post('/api/message/list', middleware.verifyAuth, controller.message.getMessage);
-  router.get('/api/group/message/list/:groupId', middleware.verifyAuth, controller.message.getGroupMessage);
+  router.post('/api/message/list',
+    middleware.verifyAuth,
+    controller.message.getMessage);
+  router.get('/api/group/message/list/:groupId',
+    middleware.verifyAuth,
+    controller.message.getGroupMessage);
 
   /**
    * chating event

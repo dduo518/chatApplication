@@ -10,7 +10,8 @@ const initialState = {
   userId: null,
   token: null,
   isLogin: false,
-  tip:'logup success! please login'
+  tip: 'logup success! please login',
+  groupInfo:[]
 };
 
 function login(state = initialState, action) {
@@ -23,8 +24,8 @@ function login(state = initialState, action) {
       return state;
     }
     case LOGIN_SUCCESS: {
-      const { userId, userName, token } = action.content
-      return { ...state, isLogin: true, userId, userName, token };
+      const { userId, userName, token, groupInfo } = action.content
+      return { ...state, isLogin: true, userId, userName, token, groupInfo };
     }
     case LOGIN_INFO: {
       const { userId, userName, token, isLogin } = action.payload

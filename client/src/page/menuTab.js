@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { Menu } from 'element-react';
 import Lists from '../components/lists'; 
-import AddItemBtn from '../components/addItemBtn'; 
+import EditGroupBtn from '../components/editGroupBtn'; 
 import { exchangeIndex, getGroupList, getUserList } from '../redux/actions'
 import { MENU } from '../redux/constants'
 
@@ -29,21 +29,22 @@ class MenuTab extends React.Component {
         <div className='menuList'>
           <Lists />
         </div> 
-        <AddItemBtn/>
+        <EditGroupBtn list={this.props.appState.menuTab.userLists} selectList={[]}/>
       </div>
     )
   }
   onSelect(index) { 
-   this.props.exchangeIndex(index)
+    console.log('change')
+    this.props.exchangeIndex(index)
+    return false;
   }
   componentDidMount() {
     this.props.getGroupList()
     this.props.getUserList()
-   
   }
 }
 
 export default connect(
-  null,
+  state => ({ appState: state }),
   { exchangeIndex, getGroupList, getUserList }
 )(MenuTab)

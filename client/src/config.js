@@ -4,6 +4,7 @@ export const apiConf = {
   login: '/user/login',
   userlist: '/user/list',
   grouplist: '/group/list',
+  creategroup:'/group/create',
   messagelist: '/message/list',
   groupMessagelist:'/group/message/list/',
 }

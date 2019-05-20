@@ -10,12 +10,12 @@ class GroupService extends Service {
   }
 
   async createGroup(param) {
-    const newGroup = new this.ctx.model.Group({
+    const newGroup = await this.ctx.model.Group.create({
+      groupId: this.app.mongoose.Types.ObjectId(),
       groupName: param.groupName,
-      members: [ this.app.mongoose.Types.ObjectId(param.userId) ],
+      members: param.members,
     });
-    const result = await newGroup.save();
-    return { body: result };
+    return { body: newGroup };
   }
 
   async addMembers(param) {

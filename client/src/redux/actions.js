@@ -12,11 +12,16 @@ import {
   CONNECT_FAILURE,
   MENU,
   SEND_MSG,
-  SEND_MSG_SUCCESS,
-  NEW_MESSAGE
 } from './constants';
 import * as axios from './../configs/axios'
-import { startSocket } from './../io/connect'
+import {
+  startSocket,
+  sendPkgMsg,
+  sendMsgToServerBySocket,
+  errorHandel,
+  listenPrivateChannel,
+  listenGroupChannel
+} from './../io/connect'
 import store from './../redux/store'
 
 export const chatAction = content => {
@@ -122,33 +127,24 @@ export const logupSubmit = content => {
 export const startConnect = ()=>{
   return async (dispatch) => {
     try {
-      const loginInfo = JSON.parse(window.localStorage.getItem('userInfo') || '{}')
       const state = store.getState()
       console.log("start connect socket")
-      const socket = startSocket(loginInfo.token)
-      // TODO: listen connect and to do some tip 
-      socket.on('connect', () => {
-        console.log(state.login.userId)
-      })
-      socket.on('reconnect', (message) => {
-        console.log('reconnect')
-      })
-      socket.on('connect_error', (message) => {
-        console.log('reconnect')
-      })
+      const socket = startSocket(state.login.token)
       
-      // private new message
-      socket.on(state.login.userId, (message) => {
-        const newMessage = JSON.parse(message)
-        dispatch({
-          type: NEW_MESSAGE,
-          payload: {...newMessage}
-        })
-      })
       dispatch({
         type: CONNECT_SUCCESS,
         socket
       })
+
+      errorHandel()
+      
+      // private new message
+      listenPrivateChannel(dispatch) 
+
+      // listen group room
+      const groupInfos = state.login.groupInfo||[]
+      groupInfos.forEach(item => listenGroupChannel(item.groupId, dispatch))
+      
       return socket
     } catch (error) {
       dispatch({
@@ -161,26 +157,32 @@ export const startConnect = ()=>{
 export const sendMsg = (content) => {
   return async (dispatch) => { 
     const state = store.getState()
-    const message = {
-      message: content,
-      to: state.chat.id,
-      from: state.login.userId,
-      fromName: state.login.userName,
-      attachments: [],
-      createdTime: Date.now(),
-      _msgId: Date.now(), // this will replace uuid method
-      msgId: Date.now()
-    }
+    const message = sendPkgMsg(content)
     dispatch({
       type: SEND_MSG,
       payload: message
     })
-    await state.chat.socket.emit('chat', message, (response) => {
-      dispatch({
-        type: SEND_MSG_SUCCESS,
-        payload: response
-      })
-    })
+    if (state.chat.type === 'GROUP') {
+      await sendMsgToServerBySocket(message, 'chatGroup', dispatch)
+    } else {
+      await sendMsgToServerBySocket(message, 'chat', dispatch)
+    }
   }
 }
   
+export const createGroup = (content) => {
+  return async (dispatch) => {
+    try {
+      await axios.createGroup(content);
+      const groupListResp = await axios.groupList();
+      dispatch({
+        type: GET_GROUPLIST,
+        payload: groupListResp
+      })
+    } catch (error) {
+      dispatch({
+        type: LOGIN_FAILURE
+      })
+    }
+  }
+}

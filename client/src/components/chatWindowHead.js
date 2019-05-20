@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 const ChatWindowHead = ({userName}) => {
     return (
       <div className="chatHead">
-        <h5>chatting with:{userName}</h5>
+        <h5> chatting with: {userName}</h5>
       </div>
     )
 }

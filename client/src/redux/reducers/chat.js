@@ -3,7 +3,8 @@ import {
   CONNECT_SUCCESS,
   SEND_MSG,
   SEND_MSG_SUCCESS,
-  NEW_MESSAGE
+  NEW_MESSAGE,
+  NEW_GROUP_MESSAGE
 } from './../constants'
 import * as _ from 'lodash'
 const initialState = {
@@ -46,6 +47,13 @@ export default function (state = initialState, action) {
     case NEW_MESSAGE: { 
       const messages = state.messages
       if (action.payload.from === state.id) {
+        messages.push(action.payload)
+      }
+      return { ...state, messages }
+    }
+    case NEW_GROUP_MESSAGE: {
+      const messages = state.messages
+      if (action.payload.to === state.id) {
         messages.push(action.payload)
       }
       return { ...state, messages }

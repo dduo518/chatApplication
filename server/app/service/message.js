@@ -20,7 +20,7 @@ class MesssageService extends Service {
     return { body: list };
   }
   async getGroupMessage(groupId) {
-    const where = { groupId };
+    const where = { to: groupId };
     const result = await this.ctx.model.GroupMessage.find(where, {}, { sort: { createdTime: 1 } });
     const list = this.transformMsg(_.cloneDeep(result));
     return { body: list };

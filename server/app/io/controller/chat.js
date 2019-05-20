@@ -67,10 +67,15 @@ module.exports = app => {
 
     async chatGroup() {
       const data = this.ctx.args[0];
+      const cb = this.ctx.args[1];
+      console.log(data);
       const resolveMsg = await this._parseMsgPackage(data);
       const message = await this._persistentGroupMsg(resolveMsg.message);
       resolveMsg.message.msgId = message._id;// this msgId create in server
+      resolveMsg.message.createdTime = message.createdTime;// this createdTime create in server
+      cb(resolveMsg.message);
       await this.messageToGroup(resolveMsg);
+
     }
 
     async _persistentGroupMsg(msg) {
@@ -79,7 +84,7 @@ module.exports = app => {
     }
 
     async messageToGroup(data) {
-      this.ctx.socket.to(data.to).emit('newMsg', JSON.stringify(data.message), this.msgAck);
+      this.app.io.emit(data.to, JSON.stringify(data.message));
     }
   }
   return Controller;

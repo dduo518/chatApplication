@@ -9,16 +9,47 @@ import {
   GET_USERLIST,
   GET_GROUPLIST,
   CONNECT_SUCCESS,
-  CONNECT_FAILURE
+  CONNECT_FAILURE,
+  MENU,
+  SEND_MSG,
 } from './constants';
 import * as axios from './../configs/axios'
-import { startSocket } from './../io/connect'
+import {
+  startSocket,
+  sendPkgMsg,
+  sendMsgToServerBySocket,
+  errorHandel,
+  listenPrivateChannel,
+  listenGroupChannel
+} from './../io/connect'
+import store from './../redux/store'
 
 export const chatAction = content => {
-  return {
-    type: CHAT_ACTION,
-    payload: content
-  };
+  return async (dispatch) => {
+    const { type } = content;
+    switch (type){
+      case MENU.USER: {
+        content.messages = await axios.getMessageList({
+          from: store.getState().login.userId,
+          to: content.item.userId,
+        });
+        break
+      }
+      case MENU.GROUP: {
+        content.messages = await axios.getGroupMessageList({
+          groupId: content.item.groupId,
+        });
+        break
+      }
+      default:{
+        break;
+      }
+    }
+    dispatch({
+      type: CHAT_ACTION,
+      payload: content
+    });
+  }
 }
 
 export const isLogin = () => {
@@ -33,19 +64,19 @@ export const isLogin = () => {
   }
 }
 
-export const getGroupList = (token) => {
+export const getGroupList = () => {
   return async (dispatch) => {
-    const groupListResp = await axios.groupList({ token: token });
-    dispatch({
+    const groupListResp = await axios.groupList();
+    dispatch({  
       type: GET_GROUPLIST,
       payload: groupListResp
     })
   } 
 }
 
-export const getUserList = (token) => {
+export const getUserList = () => {
   return async (dispatch) => {
-    const userListResp = await axios.userList({ token:token });
+    const userListResp = await axios.userList();
     dispatch({
       type: GET_USERLIST,
       payload: userListResp
@@ -96,13 +127,24 @@ export const logupSubmit = content => {
 export const startConnect = ()=>{
   return async (dispatch) => {
     try {
-      const loginInfo = JSON.parse(window.localStorage.getItem('userInfo') || '{}')
+      const state = store.getState()
       console.log("start connect socket")
-      const socket = startSocket(loginInfo.token)
+      const socket = startSocket(state.login.token)
+      
       dispatch({
         type: CONNECT_SUCCESS,
         socket
       })
+
+      errorHandel()
+      
+      // private new message
+      listenPrivateChannel(dispatch) 
+
+      // listen group room
+      const groupInfos = state.login.groupInfo||[]
+      groupInfos.forEach(item => listenGroupChannel(item.groupId, dispatch))
+      
       return socket
     } catch (error) {
       dispatch({
@@ -110,4 +152,37 @@ export const startConnect = ()=>{
       })
     }
   };
+}
+
+export const sendMsg = (content) => {
+  return async (dispatch) => { 
+    const state = store.getState()
+    const message = sendPkgMsg(content)
+    dispatch({
+      type: SEND_MSG,
+      payload: message
+    })
+    if (state.chat.type === 'GROUP') {
+      await sendMsgToServerBySocket(message, 'chatGroup', dispatch)
+    } else {
+      await sendMsgToServerBySocket(message, 'chat', dispatch)
+    }
+  }
+}
+  
+export const createGroup = (content) => {
+  return async (dispatch) => {
+    try {
+      await axios.createGroup(content);
+      const groupListResp = await axios.groupList();
+      dispatch({
+        type: GET_GROUPLIST,
+        payload: groupListResp
+      })
+    } catch (error) {
+      dispatch({
+        type: LOGIN_FAILURE
+      })
+    }
+  }
 }

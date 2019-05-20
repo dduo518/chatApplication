@@ -13,10 +13,12 @@ class GroupController extends Controller {
 
   async createGroup() {
     const { ctx } = this;
+    ctx.request.body.members.push(this.ctx.request.userInfo.userId);
     const params = {
       groupName: ctx.request.body.groupName,
-      userId: ctx.transformStrToObjectId(this.ctx.request.userInfo.userId),
+      members: ctx.request.body.members,
     };
+    params.members = params.members.map(item => ctx.transformStrToObjectId(item));
     const result = await ctx.service.group.createGroup(params);
     ctx.sendResponse(result);
   }

@@ -1,24 +1,28 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { startConnect } from '../redux/actions'
+import  MessageItem  from './messsageItem'
 class ChatWindow extends React.Component {
-  constructor(props) {
-    super(props)
-    console.log(props)
-  }
+  
   render() {
+    const { messages } = this.props.appState.chat
+    const { userId } = this.props.appState.login
     return (
       <div className="chatRecord">
-        chatRecord
+        <ul>
+          {messages.map(item =>
+            (<MessageItem
+              key={`item-${item.msgId}`}
+              item={item}
+              userId={userId}
+            />))}
+        </ul>
       </div>
     )
   }
   async componentDidMount() {
     console.log('start connect')
-    const socket = await this.props.startConnect()
-    socket.on(this.props.appState.login.userId, (message) => {
-      console.log(message)
-    })
+    this.props.startConnect()
   }
 }
 

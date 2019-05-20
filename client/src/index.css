@@ -21,7 +21,7 @@ head css style
 chatPannel
 *******************************/ 
 .chatPannel{
-   min-height: 95vh;
+  max-height: 50%
 }
 
 /*******************************
@@ -73,7 +73,10 @@ chatwindow css style
 .chatWindow{
   height: 100%;
   box-sizing: border-box;
-  padding: 10px; 
+  padding: 10px;
+  display: flex;
+  flex-direction: column; 
+  
 }
 .chatHead{
   height: 10%;
@@ -83,13 +86,37 @@ chatwindow css style
   background: #eef1f6;
 }
 .chatRecord{
-  height: 60%;
+  height: 500px;
   border: 1px solid #89c0e8;
   border-bottom:0; 
+  overflow: hidden;
+}
+.chatRecord ul{
+  height: 100%;
+  overflow: auto;
+  padding: 10px;
+  margin: 0;
+  box-sizing: border-box;
+}
+.chatRecord ul li{
+  list-style: none;
+  padding: 5px;
+  font-size: 18px;
+}
+.chatRecord ul li.isMe{
+  text-align: right
+}
+.chatRecord ul .recordTime{
+  font-size: 12px;
 }
 .chatInput{
   height: 30%;
   border: 1px solid #89c0e8;
-   border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+}
+.chatInput input{
+  width: 100%;
+  border: 1px solid;
+  height: 100px;
 }
 

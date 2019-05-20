@@ -28,8 +28,8 @@ module.exports = app => {
   /**
    * pull message api
    */
-  router.get('/api/message/list/:id', middleware.verifyAuth, controller.message.getMessage);
-  router.get('/api/group/message/list/:id', middleware.verifyAuth, controller.message.getGroupMessage);
+  router.post('/api/message/list', middleware.verifyAuth, controller.message.getMessage);
+  router.get('/api/group/message/list/:groupId', middleware.verifyAuth, controller.message.getGroupMessage);
 
   /**
    * chating event

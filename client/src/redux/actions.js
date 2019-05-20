@@ -9,16 +9,42 @@ import {
   GET_USERLIST,
   GET_GROUPLIST,
   CONNECT_SUCCESS,
-  CONNECT_FAILURE
+  CONNECT_FAILURE,
+  MENU,
+  SEND_MSG,
+  SEND_MSG_SUCCESS,
+  NEW_MESSAGE
 } from './constants';
 import * as axios from './../configs/axios'
 import { startSocket } from './../io/connect'
+import store from './../redux/store'
 
 export const chatAction = content => {
-  return {
-    type: CHAT_ACTION,
-    payload: content
-  };
+  return async (dispatch) => {
+    const { type } = content;
+    switch (type){
+      case MENU.USER: {
+        content.messages = await axios.getMessageList({
+          from: store.getState().login.userId,
+          to: content.item.userId,
+        });
+        break
+      }
+      case MENU.GROUP: {
+        content.messages = await axios.getGroupMessageList({
+          groupId: content.item.groupId,
+        });
+        break
+      }
+      default:{
+        break;
+      }
+    }
+    dispatch({
+      type: CHAT_ACTION,
+      payload: content
+    });
+  }
 }
 
 export const isLogin = () => {
@@ -33,19 +59,19 @@ export const isLogin = () => {
   }
 }
 
-export const getGroupList = (token) => {
+export const getGroupList = () => {
   return async (dispatch) => {
-    const groupListResp = await axios.groupList({ token: token });
-    dispatch({
+    const groupListResp = await axios.groupList();
+    dispatch({  
       type: GET_GROUPLIST,
       payload: groupListResp
     })
   } 
 }
 
-export const getUserList = (token) => {
+export const getUserList = () => {
   return async (dispatch) => {
-    const userListResp = await axios.userList({ token:token });
+    const userListResp = await axios.userList();
     dispatch({
       type: GET_USERLIST,
       payload: userListResp
@@ -97,8 +123,28 @@ export const startConnect = ()=>{
   return async (dispatch) => {
     try {
       const loginInfo = JSON.parse(window.localStorage.getItem('userInfo') || '{}')
+      const state = store.getState()
       console.log("start connect socket")
       const socket = startSocket(loginInfo.token)
+      // TODO: listen connect and to do some tip 
+      socket.on('connect', () => {
+        console.log(state.login.userId)
+      })
+      socket.on('reconnect', (message) => {
+        console.log('reconnect')
+      })
+      socket.on('connect_error', (message) => {
+        console.log('reconnect')
+      })
+      
+      // private new message
+      socket.on(state.login.userId, (message) => {
+        const newMessage = JSON.parse(message)
+        dispatch({
+          type: NEW_MESSAGE,
+          payload: {...newMessage}
+        })
+      })
       dispatch({
         type: CONNECT_SUCCESS,
         socket
@@ -111,3 +157,30 @@ export const startConnect = ()=>{
     }
   };
 }
+
+export const sendMsg = (content) => {
+  return async (dispatch) => { 
+    const state = store.getState()
+    const message = {
+      message: content,
+      to: state.chat.id,
+      from: state.login.userId,
+      fromName: state.login.userName,
+      attachments: [],
+      createdTime: Date.now(),
+      _msgId: Date.now(), // this will replace uuid method
+      msgId: Date.now()
+    }
+    dispatch({
+      type: SEND_MSG,
+      payload: message
+    })
+    await state.chat.socket.emit('chat', message, (response) => {
+      dispatch({
+        type: SEND_MSG_SUCCESS,
+        payload: response
+      })
+    })
+  }
+}
+  

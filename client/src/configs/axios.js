@@ -58,3 +58,19 @@ export const groupList = async (data) => {
     throw new Error('fetch failure')
   }
 }
+export const getMessageList = async (data) => {
+  const response = await axios({ ...baseConfig, data: data, url: apiConf.messagelist, method: 'post' })
+  if (response.status === 200) {
+    return response.data
+  } else {
+    throw new Error('fetch failure')
+  }
+}
+export const getGroupMessageList = async (data) => {
+  const response = await axios({ ...baseConfig, url: apiConf.groupMessagelist+data.groupId, method: 'get' })
+  if (response.status === 200) {
+    return response.data
+  } else {
+    throw new Error('fetch failure')
+  }
+}

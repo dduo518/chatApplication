@@ -12,17 +12,25 @@ module.exports = app => {
   class Controller extends app.Controller {
     async chat() {
       const data = this.ctx.args[0];
+      const cb = this.ctx.args[1];
       const resolveMsg = await this._parseMsgPackage(data);
       const message = await this._persistentMsg(resolveMsg.message);
       resolveMsg.message.msgId = message._id;// this msgId create in server
+      resolveMsg.message.createdTime = message.createdTime;// this createdTime create in server
+      cb(resolveMsg.message);
       await this.messageToClient(resolveMsg);
     }
 
     async messageToClient(data) {
       // TODO: message receive callback if not receive ack should message reissue
-      this.ctx.socket.emit(data.to, JSON.stringify(data.message), this.msgAck);
+      const toUserInfo = await this.getToUserSocketId(data.to);
+      const socket = await this.getClientSocket(toUserInfo.toSocketId);
+      socket && socket.emit(data.to, JSON.stringify(data.message), this.msgAck);
     }
 
+    getClientSocket(socketId) {
+      return this.app.io.sockets.connected[socketId];
+    }
     async joinRoom() {
       const data = this.ctx.args[0];
       this.ctx.socket.join(data);
@@ -30,10 +38,10 @@ module.exports = app => {
 
     async _parseMsgPackage(data) {
       const message = {
-        from: this.ctx.transformStrToObjectId(this.ctx.socket.userInfo.userId),
-        to: this.ctx.transformStrToObjectId(this.ctx.socket.userInfo.to),
+        from: this.ctx.socket.userInfo.userId,
+        to: data.to,
         fromName: this.ctx.socket.userInfo.userName,
-        text: data.message,
+        message: data.message,
         attachments: data.attachments || [],
         _msgId: data._msgId, // this msgId create in client
       };
@@ -51,9 +59,9 @@ module.exports = app => {
       console.log('ack:', res);
     }
 
-    async getToUserInfo(toUserId) {
+    async getToUserSocketId(toUserId) {
       const toUserInfoKey = userInfoKey(toUserId);
-      const toSocketId = this.app.redis.hget(toUserInfoKey, 'socketId');
+      const toSocketId = await this.app.redis.hget(toUserInfoKey, 'socketId');
       return { toSocketId };
     }
 

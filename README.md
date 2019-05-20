@@ -5,7 +5,7 @@
 ##### how to start BackEnd?
 
 - 1. the server is depend on  mongodb and redis and the frameworks is eggjs[https://github.com/eggjs/egg]
-- 2. the node version is v8.15.0 becase the eggjs-socket has a issue([https://github.com/eggjs/egg/issues/3576])
+- 2. the node version is v8.15.0 because the eggjs-socket has a issues([https://github.com/eggjs/egg/issues/3576])
 - 3. the server config in ./server/config/config.default.js
 - 4. open file path  ```cd server```
 - 5. install package `$./server> yarn `
@@ -13,10 +13,11 @@
 - 7. install finish so `yarn dev`
 
 ##### how to start FrontEnd?
-- 1. the client is depend on react\react-redux\react-router
+- 1. the client is depend on react\react-redux\react-router\element-ui[https://elemefe.github.io/element-react/#/zh-CN/layout]
 - 2. open file path  ```cd client```
 - 3. install package `$./client> yarn `
 - 4. install finish so `yarn start`
+- 5. open chrome `http://localhost:3000`
 
 ##### the application server backend feature 
 - 1. registered 

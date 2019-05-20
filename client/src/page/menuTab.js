@@ -7,12 +7,6 @@ import { exchangeIndex, getGroupList, getUserList } from '../redux/actions'
 import { MENU } from '../redux/constants'
 
 class MenuTab extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      index: MENU.USER
-    };
-  }
   render() {
     return (
       <div className='menu'>
@@ -34,7 +28,6 @@ class MenuTab extends React.Component {
     )
   }
   onSelect(index) { 
-    console.log('change')
     this.props.exchangeIndex(index)
     return false;
   }

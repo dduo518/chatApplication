@@ -13,10 +13,11 @@
 - 7. install finish so `yarn dev`
 
 ##### how to start FrontEnd?
-- 1. the client is depend on react\react-redux\react-router
+- 1. the client is depend on react\react-redux\react-router\element-ui[https://elemefe.github.io/element-react/#/zh-CN/layout]
 - 2. open file path  ```cd client```
 - 3. install package `$./client> yarn `
 - 4. install finish so `yarn start`
+- 5. open chrome `http://localhost:3000`
 
 ##### the application server backend feature 
 - 1. registered 

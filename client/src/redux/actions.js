@@ -27,6 +27,7 @@ import store from './../redux/store'
 export const chatAction = content => {
   return async (dispatch) => {
     const { type } = content;
+    console.log(type)
     switch (type){
       case MENU.USER: {
         content.messages = await axios.getMessageList({

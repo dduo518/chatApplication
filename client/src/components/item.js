@@ -9,7 +9,7 @@ class Item extends React.Component {
       isShow:false
     }
   }
-  startChat(e) {
+  startChat() {
     this.props.chatAction({ item: this.props.item, type: this.props.type })
     return false;
   }
